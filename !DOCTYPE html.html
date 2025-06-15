@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8">
+  <title>Dzień dobry</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      text-align: center;
+      padding-top: 50px;
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+    }
+
+    button {
+      background-color: #e63946;
+      color: white;
+      border: none;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    button:hover:not(:disabled) {
+      background-color: #d62828;
+    }
+
+    #kot-container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #kot {
+      margin-top: 30px;
+      max-width: 400px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+      opacity: 0;
+      transition: opacity 0.5s ease;
+    }
+
+    #kot.fade-in {
+      opacity: 1;
+    }
+
+    #kot.fade-out {
+      opacity: 0;
+    }
+
+    #cooldown {
+      margin-top: 15px;
+      font-size: 1.2rem;
+      color: #555;
+    }
+  </style>
+</head>
+<body>
+  <h1>Dzień dobry</h1>
+  <button onclick="generujKota()">Generuj kota</button>
+  <div id="cooldown"></div>
+
+  <div id="kot-container">
+    <img id="kot" src="kot1.png" alt="Kot">
+  </div>
+
+  <script>
+    const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
+    let dostepneKoty = [...koty];
+    let ostatniKot = null;
+    let pierwszy = true;
+
+    const img = document.getElementById('kot');
+    const btn = document.querySelector('button');
+    const licznik = document.getElementById('cooldown');
+
+    let cooldownAktywny = false;
+    let czasPozostaly = 0;
+    let timerInterval = null;
+
+    function generujKota() {
+      if (cooldownAktywny) return;
+
+      // Reset listy jeśli pusta
+      if (dostepneKoty.length === 0) {
+        dostepneKoty = [...koty];
+      }
+
+      // Losowanie kota innego niż poprzedni
+      let index, losowy;
+      do {
+        index = Math.floor(Math.random() * dostepneKoty.length);
+        losowy = dostepneKoty[index];
+      } while (losowy === ostatniKot && dostepneKoty.length > 1);
+
+      dostepneKoty.splice(index, 1);
+      ostatniKot = losowy;
+
+      // Animacja
+      if (pierwszy) {
+        img.src = losowy;
+        img.onload = () => {
+          img.classList.add('fade-in');
+        };
+        pierwszy = false;
+      } else {
+        img.classList.remove('fade-in');
+        img.classList.add('fade-out');
+
+        setTimeout(() => {
+          img.src = losowy;
+          img.onload = () => {
+            img.classList.remove('fade-out');
+            img.classList.add('fade-in');
+          };
+        }, 500);
+      }
+
+      uruchomCooldown(60);
+    }
+
+    function uruchomCooldown(sekundy) {
+      cooldownAktywny = true;
+      czasPozostaly = sekundy;
+      btn.disabled = true;
+      licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
+
+      timerInterval = setInterval(() => {
+        czasPozostaly--;
+        if (czasPozostaly > 0) {
+          licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
+        } else {
+          clearInterval(timerInterval);
+          licznik.textContent = '';
+          btn.disabled = false;
+          cooldownAktywny = false;
+        }
+      }, 1000);
+    }
+  </script>
+</body>
+</html>
+
