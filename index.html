@@ -76,79 +76,89 @@
   </div>
 
   <script>
-    const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
-    let dostepneKoty = [...koty];
-    let ostatniKot = null;
-    let pierwszy = true;
+  const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
+  let dostepneKoty = [...koty];
+  let ostatniKot = null;
+  let pierwszy = true;
 
-    const img = document.getElementById('kot');
-    const btn = document.querySelector('button');
-    const licznik = document.getElementById('cooldown');
+  const img = document.getElementById('kot');
+  const btn = document.querySelector('button');
+  const licznik = document.getElementById('cooldown');
 
-    let cooldownAktywny = false;
-    let czasPozostaly = 0;
-    let timerInterval = null;
+  let cooldownAktywny = false;
+  let timerInterval = null;
 
-    function generujKota() {
-      if (cooldownAktywny) return;
+  // Po załadowaniu strony: sprawdź czy jest cooldown w localStorage
+  const ostatniKlik = localStorage.getItem('ostatniKlik');
+  if (ostatniKlik) {
+    const teraz = Math.floor(Date.now() / 1000);
+    const roznica = teraz - parseInt(ostatniKlik);
+    if (roznica < 60) {
+      uruchomCooldown(60 - roznica);
+    }
+  }
 
-      // Reset listy jeśli pusta
-      if (dostepneKoty.length === 0) {
-        dostepneKoty = [...koty];
-      }
+  function generujKota() {
+    if (cooldownAktywny) return;
 
-      // Losowanie kota innego niż poprzedni
-      let index, losowy;
-      do {
-        index = Math.floor(Math.random() * dostepneKoty.length);
-        losowy = dostepneKoty[index];
-      } while (losowy === ostatniKot && dostepneKoty.length > 1);
+    if (dostepneKoty.length === 0) {
+      dostepneKoty = [...koty];
+    }
 
-      dostepneKoty.splice(index, 1);
-      ostatniKot = losowy;
+    let index, losowy;
+    do {
+      index = Math.floor(Math.random() * dostepneKoty.length);
+      losowy = dostepneKoty[index];
+    } while (losowy === ostatniKot && dostepneKoty.length > 1);
 
-      // Animacja
-      if (pierwszy) {
+    dostepneKoty.splice(index, 1);
+    ostatniKot = losowy;
+
+    if (pierwszy) {
+      img.src = losowy;
+      img.onload = () => {
+        img.classList.add('fade-in');
+      };
+      pierwszy = false;
+    } else {
+      img.classList.remove('fade-in');
+      img.classList.add('fade-out');
+
+      setTimeout(() => {
         img.src = losowy;
         img.onload = () => {
+          img.classList.remove('fade-out');
           img.classList.add('fade-in');
         };
-        pierwszy = false;
+      }, 500);
+    }
+
+    // Zapisz czas kliknięcia do localStorage
+    const timestamp = Math.floor(Date.now() / 1000);
+    localStorage.setItem('ostatniKlik', timestamp);
+    uruchomCooldown(60);
+  }
+
+  function uruchomCooldown(sekundy) {
+    cooldownAktywny = true;
+    let czasPozostaly = sekundy;
+    btn.disabled = true;
+    licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
+
+    timerInterval = setInterval(() => {
+      czasPozostaly--;
+      if (czasPozostaly > 0) {
+        licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
       } else {
-        img.classList.remove('fade-in');
-        img.classList.add('fade-out');
-
-        setTimeout(() => {
-          img.src = losowy;
-          img.onload = () => {
-            img.classList.remove('fade-out');
-            img.classList.add('fade-in');
-          };
-        }, 500);
+        clearInterval(timerInterval);
+        licznik.textContent = '';
+        btn.disabled = false;
+        cooldownAktywny = false;
       }
+    }, 1000);
+  }
+</script>
 
-      uruchomCooldown(60);
-    }
-
-    function uruchomCooldown(sekundy) {
-      cooldownAktywny = true;
-      czasPozostaly = sekundy;
-      btn.disabled = true;
-      licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
-
-      timerInterval = setInterval(() => {
-        czasPozostaly--;
-        if (czasPozostaly > 0) {
-          licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
-        } else {
-          clearInterval(timerInterval);
-          licznik.textContent = '';
-          btn.disabled = false;
-          cooldownAktywny = false;
-        }
-      }, 1000);
-    }
-  </script>
 </body>
 </html>
 
