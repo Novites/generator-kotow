@@ -88,15 +88,17 @@
   let cooldownAktywny = false;
   let timerInterval = null;
 
-  // Po załadowaniu strony: sprawdź czy jest cooldown w localStorage
-  const ostatniKlik = localStorage.getItem('ostatniKlik');
-  if (ostatniKlik) {
-    const teraz = Math.floor(Date.now() / 1000);
-    const roznica = teraz - parseInt(ostatniKlik);
-    if (roznica < 60) {
-      uruchomCooldown(60 - roznica);
+  // 🔁 Przy starcie: sprawdź cooldown z localStorage
+  window.addEventListener('DOMContentLoaded', () => {
+    const ostatniKlik = localStorage.getItem('ostatniKlik');
+    if (ostatniKlik) {
+      const teraz = Math.floor(Date.now() / 1000);
+      const roznica = teraz - parseInt(ostatniKlik);
+      if (roznica < 60) {
+        uruchomCooldown(60 - roznica);
+      }
     }
-  }
+  });
 
   function generujKota() {
     if (cooldownAktywny) return;
@@ -133,13 +135,14 @@
       }, 500);
     }
 
-    // Zapisz czas kliknięcia do localStorage
     const timestamp = Math.floor(Date.now() / 1000);
     localStorage.setItem('ostatniKlik', timestamp);
     uruchomCooldown(60);
   }
 
   function uruchomCooldown(sekundy) {
+    if (cooldownAktywny) return;
+
     cooldownAktywny = true;
     let czasPozostaly = sekundy;
     btn.disabled = true;
@@ -158,7 +161,6 @@
     }, 1000);
   }
 </script>
-
 </body>
 </html>
 
