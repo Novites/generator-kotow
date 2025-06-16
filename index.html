@@ -64,16 +64,21 @@
       font-size: 1.2rem;
       color: #555;
     #sekretny-container {
-  position: absolute;
+  position: fixed;
   top: 50px;
   right: 50px;
+  width: 120px;
   text-align: center;
+  z-index: 100;
 }
 
 #klodka {
   width: 100px;
+  height: auto;
   cursor: default;
   transition: opacity 0.5s ease;
+  display: block;
+  margin: 0 auto;
 }
 
 #klodka.odblokowana {
@@ -86,11 +91,12 @@
 
 #sekretnyKot {
   display: none;
-  width: 200px;
-  margin-top: 10px;
+  width: 120px;
   border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
   transition: opacity 0.5s ease;
+  margin-top: 10px;
+  opacity: 0;
 }
 
   </style>
@@ -205,16 +211,16 @@
       klodka.src = '4.png'; // zielona kłódka
       klodka.classList.add('odblokowana');
       klodka.onclick = () => {
-        klodka.classList.add('fade-out');
-        setTimeout(() => {
-          klodka.style.display = 'none';
-          sekretnyKot.style.display = 'block';
-          sekretnyKot.style.opacity = 0;
-          setTimeout(() => {
-            sekretnyKot.style.opacity = 1;
-          }, 10);
-        }, 500);
-      };
+  klodka.classList.add('fade-out');
+  setTimeout(() => {
+    klodka.style.display = 'none';
+    sekretnyKot.style.display = 'block';
+    setTimeout(() => {
+      sekretnyKot.style.opacity = 1;
+    }, 10);
+  }, 500);
+};
+
     }
   }
 </script>
