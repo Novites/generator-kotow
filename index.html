@@ -64,42 +64,6 @@
       font-size: 1.2rem;
       color: #555;
     }
-
-    #sekretny-container {
-      position: fixed;
-      top: 50px;
-      right: 50px;
-      width: 120px;
-      text-align: center;
-      z-index: 100;
-    }
-
-    #klodka {
-      width: 100px;
-      height: auto;
-      cursor: default;
-      transition: opacity 0.5s ease;
-      display: block;
-      margin: 0 auto;
-    }
-
-    #klodka.odblokowana {
-      cursor: pointer;
-    }
-
-    #klodka.fade-out {
-      opacity: 0;
-    }
-
-    #sekretnyKot {
-      display: none;
-      width: 120px;
-      border-radius: 10px;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-      transition: opacity 0.5s ease;
-      margin-top: 10px;
-      opacity: 0;
-    }
   </style>
 </head>
 <body>
@@ -111,23 +75,15 @@
     <img id="kot" src="kot1.png" alt="Kot">
   </div>
 
-  <div id="sekretny-container">
-    <img id="klodka" src="3.png" alt="Zablokowane">
-    <img id="sekretnyKot" src="sekretny kot.jpg" alt="Sekretny kot">
-  </div>
-
   <script>
     const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
     let dostepneKoty = [...koty];
     let ostatniKot = null;
     let pierwszy = true;
-    let pokazaneKoty = new Set(JSON.parse(localStorage.getItem('pokazaneKoty') || '[]'));
 
     const img = document.getElementById('kot');
     const btn = document.querySelector('button');
     const licznik = document.getElementById('cooldown');
-    const klodka = document.getElementById('klodka');
-    const sekretnyKot = document.getElementById('sekretnyKot');
 
     let cooldownAktywny = false;
     let timerInterval = null;
@@ -141,7 +97,6 @@
           uruchomCooldown(60 - roznica);
         }
       }
-      sprawdzSekret();
     });
 
     function generujKota() {
@@ -159,9 +114,6 @@
 
       dostepneKoty.splice(index, 1);
       ostatniKot = losowy;
-
-      pokazaneKoty.add(losowy);
-      localStorage.setItem('pokazaneKoty', JSON.stringify([...pokazaneKoty]));
 
       if (pierwszy) {
         img.src = losowy;
@@ -182,7 +134,6 @@
       const timestamp = Math.floor(Date.now() / 1000);
       localStorage.setItem('ostatniKlik', timestamp);
       uruchomCooldown(60);
-      sprawdzSekret();
     }
 
     function uruchomCooldown(sekundy) {
@@ -204,23 +155,6 @@
           cooldownAktywny = false;
         }
       }, 1000);
-    }
-
-    function sprawdzSekret() {
-      if (pokazaneKoty.size === koty.length) {
-        klodka.src = '4.png';
-        klodka.classList.add('odblokowana');
-        klodka.onclick = () => {
-          klodka.classList.add('fade-out');
-          setTimeout(() => {
-            klodka.style.display = 'none';
-            sekretnyKot.style.display = 'block';
-            setTimeout(() => {
-              sekretnyKot.style.opacity = 1;
-            }, 10);
-          }, 500);
-        };
-      }
     }
   </script>
 </body>
