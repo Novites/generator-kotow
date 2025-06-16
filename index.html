@@ -64,6 +64,22 @@
       font-size: 1.2rem;
       color: #555;
     }
+
+    #kod-container {
+      position: fixed;
+      top: 50px;
+      right: 50px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    #kod {
+      padding: 10px;
+      border-radius: 5px;
+      border: 1px solid #aaa;
+    }
   </style>
 </head>
 <body>
@@ -75,11 +91,17 @@
     <img id="kot" src="kot1.png" alt="Kot">
   </div>
 
+  <div id="kod-container">
+    <input type="text" id="kod" placeholder="Wpisz kod">
+    <button onclick="sprawdzKod()">OK</button>
+  </div>
+
   <script>
     const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
     let dostepneKoty = [...koty];
     let ostatniKot = null;
     let pierwszy = true;
+    let kodAktywny = false;
 
     const img = document.getElementById('kot');
     const btn = document.querySelector('button');
@@ -100,7 +122,7 @@
     });
 
     function generujKota() {
-      if (cooldownAktywny) return;
+      if (cooldownAktywny && !kodAktywny) return;
 
       if (dostepneKoty.length === 0) {
         dostepneKoty = [...koty];
@@ -131,9 +153,11 @@
         }, 500);
       }
 
-      const timestamp = Math.floor(Date.now() / 1000);
-      localStorage.setItem('ostatniKlik', timestamp);
-      uruchomCooldown(60);
+      if (!kodAktywny) {
+        const timestamp = Math.floor(Date.now() / 1000);
+        localStorage.setItem('ostatniKlik', timestamp);
+        uruchomCooldown(60);
+      }
     }
 
     function uruchomCooldown(sekundy) {
@@ -155,6 +179,20 @@
           cooldownAktywny = false;
         }
       }, 1000);
+    }
+
+    function sprawdzKod() {
+      const wpisany = document.getElementById('kod').value.trim().toLowerCase();
+      if (wpisany === 'kot') {
+        kodAktywny = true;
+        alert('✅ Kod poprawny – cooldown wyłączony do odświeżenia!');
+        btn.disabled = false;
+        clearInterval(timerInterval);
+        licznik.textContent = '';
+        cooldownAktywny = false;
+      } else {
+        alert('❌ Błędny kod.');
+      }
     }
   </script>
 </body>
