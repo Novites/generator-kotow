@@ -142,12 +142,12 @@
       cooldownAktywny = true;
       let czasPozostaly = sekundy;
       btn.disabled = true;
-      licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
+      licznik.textContent = `Możesz generować ponownie za ${czasPozostaly}s`;
 
       timerInterval = setInterval(() => {
         czasPozostaly--;
         if (czasPozostaly > 0) {
-          licznik.textContent = `Możesz losować ponownie za ${czasPozostaly}s`;
+          licznik.textContent = `Możesz generować ponownie za ${czasPozostaly}s`;
         } else {
           clearInterval(timerInterval);
           licznik.textContent = '';
