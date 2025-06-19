@@ -9,6 +9,7 @@
       background-color: #f0f0f0;
       text-align: center;
       padding-top: 50px;
+      transition: background-color 0.5s ease;
     }
 
     h1 {
@@ -83,19 +84,39 @@
     }
 
     #molly {
-  width: 180px;
-  position: absolute;
-  left: 52%;
-  transform: translateX(-50%);
-  top: -70px; /* było -60px */
-  display: none;
-  z-index: 1;
-}
+      width: 180px;
+      position: absolute;
+      left: 52%;
+      transform: translateX(-50%);
+      top: -68px;
+      display: none;
+      z-index: 1;
+    }
 
     #generator-container {
       position: relative;
       display: inline-block;
       margin-top: 40px;
+    }
+
+    #sekretny-blok {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 40px;
+    }
+
+    #sekretny-blok img {
+      max-width: 300px;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+    }
+
+    #sekretny-napis {
+      font-size: 2.5rem;
+      font-weight: bold;
+      color: #fff;
+      margin-top: 20px;
     }
   </style>
 </head>
@@ -112,6 +133,11 @@
     <img id="kot" src="kot1.png" alt="Kot">
   </div>
 
+  <div id="sekretny-blok">
+    <img src="sekretny2.png" alt="Sekretny kot">
+    <div id="sekretny-napis">SEKRETNY KOT!!!!!</div>
+  </div>
+
   <div id="kod-container">
     <input type="text" id="kod" placeholder="Wpisz kod">
     <button onclick="sprawdzKod()">OK</button>
@@ -123,11 +149,13 @@
     let ostatniKot = null;
     let pierwszy = true;
     let kodAktywny = false;
+    let sekretPokazany = false;
 
     const img = document.getElementById('kot');
     const btn = document.querySelector('button');
     const licznik = document.getElementById('cooldown');
     const molly = document.getElementById('molly');
+    const blokSekretny = document.getElementById('sekretny-blok');
 
     let cooldownAktywny = false;
     let timerInterval = null;
@@ -145,6 +173,14 @@
 
     function generujKota() {
       if (cooldownAktywny && !kodAktywny) return;
+
+      // Sekretny kot - 1/100 szansy
+      if (!sekretPokazany && Math.random() < 0.01) {
+        sekretPokazany = true;
+        document.body.style.backgroundColor = '#7e4cc4';
+        blokSekretny.style.display = 'flex';
+        return;
+      }
 
       if (dostepneKoty.length === 0) {
         dostepneKoty = [...koty];
