@@ -73,7 +73,7 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 10px;
+      gap: 6px;
     }
 
     #kod {
@@ -87,7 +87,7 @@
       position: absolute;
       left: 50%;
       transform: translateX(-50%);
-      top: -30px;
+      top: -60px; /* wyżej niż poprzednio */
       display: none;
       z-index: 1;
     }
@@ -95,7 +95,7 @@
     #generator-container {
       position: relative;
       display: inline-block;
-      margin-top: 20px;
+      margin-top: 40px;
     }
   </style>
 </head>
@@ -214,7 +214,7 @@
         cooldownAktywny = false;
       } else if (wpisany === 'molly') {
         molly.style.display = 'block';
-        alert('🐾 Molly się chowa za przyciskiem!');
+        alert('Molly');
       } else {
         alert('❌ Błędny kod.');
       }
