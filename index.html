@@ -13,7 +13,7 @@
 
     h1 {
       font-size: 3rem;
-      margin-bottom: 20px;
+      margin-bottom: 40px;
     }
 
     button {
@@ -25,6 +25,7 @@
       border-radius: 8px;
       cursor: pointer;
       transition: background-color 0.3s;
+      margin-top: 30px;
     }
 
     button:disabled {
@@ -80,12 +81,32 @@
       border-radius: 5px;
       border: 1px solid #aaa;
     }
+
+    #molly {
+      width: 180px;
+      position: absolute;
+      left: 50%;
+      transform: translateX(-50%);
+      top: -30px;
+      display: none;
+      z-index: 1;
+    }
+
+    #generator-container {
+      position: relative;
+      display: inline-block;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
-  <h1>Dzień dobry</h1>
-  <button onclick="generujKota()">Generuj kota</button>
-  <div id="cooldown"></div>
+  <h1>Generator kotów</h1>
+
+  <div id="generator-container">
+    <img id="molly" src="7b1e8fe1-5fd0-4671-80fa-a741f79decf1.png" alt="Molly">
+    <button onclick="generujKota()">Generuj kota</button>
+    <div id="cooldown"></div>
+  </div>
 
   <div id="kot-container">
     <img id="kot" src="kot1.png" alt="Kot">
@@ -97,7 +118,7 @@
   </div>
 
   <script>
-    const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png', 'kot6.png', 'kot7.png', 'kot8.jpg', 'kot9.jpg', 'kot10.jpeg'];
+    const koty = ['kot1.png', 'kot2.png', 'kot3.png', 'kot4.png', 'kot5.png'];
     let dostepneKoty = [...koty];
     let ostatniKot = null;
     let pierwszy = true;
@@ -106,6 +127,7 @@
     const img = document.getElementById('kot');
     const btn = document.querySelector('button');
     const licznik = document.getElementById('cooldown');
+    const molly = document.getElementById('molly');
 
     let cooldownAktywny = false;
     let timerInterval = null;
@@ -190,6 +212,9 @@
         clearInterval(timerInterval);
         licznik.textContent = '';
         cooldownAktywny = false;
+      } else if (wpisany === 'molly') {
+        molly.style.display = 'block';
+        alert('🐾 Molly się chowa za przyciskiem!');
       } else {
         alert('❌ Błędny kod.');
       }
